@@ -1,0 +1,9 @@
+spring:
+  config:
+    activate:
+      on-profile: "test"
+nexus:
+  sources:
+    - name: "testSource"
+      url: "http://localhost:${wiremock.server.port}/quote/{ticker}"
+      enabled: true
