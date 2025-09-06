@@ -29,5 +29,35 @@ public class QuoteHistory implements Serializable {
     @Column(name = "quote_timestamp")
     private Instant timestamp;
 
+    public Long getId() {
+        return id;
+    }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getSymbol() {
+        return symbol;
+    }
+
+    public void setSymbol(String symbol) {
+        this.symbol = symbol;
+    }
+
+    public BigDecimal getAggregatedPrice() {
+        return aggregatedPrice;
+    }
+
+    public void setAggregatedPrice(BigDecimal aggregatedPrice) {
+        this.aggregatedPrice = aggregatedPrice;
+    }
+
+    public Instant getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(Instant timestamp) {
+        this.timestamp = timestamp;
+    }
 }
