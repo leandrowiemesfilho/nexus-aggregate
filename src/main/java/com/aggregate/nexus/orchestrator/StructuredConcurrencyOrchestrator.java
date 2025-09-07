@@ -1,14 +1,15 @@
 package com.aggregate.nexus.orchestrator;
 
+import com.aggregate.nexus.config.SourceConfig;
 import com.aggregate.nexus.domain.AggregatedQuoteResponse;
 import com.aggregate.nexus.domain.MarketData;
-import com.aggregate.nexus.config.SourceConfig;
+import com.aggregate.nexus.event.NewQuoteEvent;
 import com.aggregate.nexus.service.DataAggregationService;
 import com.aggregate.nexus.service.QuoteCachingService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -22,16 +23,28 @@ public class StructuredConcurrencyOrchestrator {
     private final List<SourceConfig> sources;
     private final QuoteCachingService cachingService;
     private final DataAggregationService dataAggregationService;
+    private final ApplicationEventPublisher applicationEventPublisher;
 
     @Autowired
     public StructuredConcurrencyOrchestrator(final List<SourceConfig> sources,
                                              final QuoteCachingService cachingService,
-                                             final DataAggregationService dataAggregationService) {
+                                             final DataAggregationService dataAggregationService,
+                                             final ApplicationEventPublisher applicationEventPublisher) {
         this.sources = sources;
         this.cachingService = cachingService;
         this.dataAggregationService = dataAggregationService;
+        this.applicationEventPublisher = applicationEventPublisher;
     }
 
+    /**
+     * Retrieves an aggregated quote for the given ticker symbol.
+     * Implements a cache-aside pattern: checks cache first, then external sources if needed.
+     * Publishes a NewQuoteEvent after successfully fetching a fresh quote.
+     *
+     * @param ticker the stock ticker symbol (e.g., "AAPL")
+     * @return the aggregated quote response
+     * @throws InterruptedException if fetching from external sources fails
+     */
     public AggregatedQuoteResponse getAggregatedQuote(final String ticker) throws InterruptedException {
         final Optional<AggregatedQuoteResponse> cachedQuote = this.cachingService.getCachedQuote(ticker);
 
@@ -42,6 +55,8 @@ public class StructuredConcurrencyOrchestrator {
         final AggregatedQuoteResponse freshQuote = fetchFreshQuote(ticker);
 
         this.cachingService.cacheQuote(ticker, freshQuote);
+
+        this.applicationEventPublisher.publishEvent(new NewQuoteEvent(freshQuote));
 
         return freshQuote;
     }
@@ -79,13 +94,13 @@ public class StructuredConcurrencyOrchestrator {
 
     private AggregatedQuoteResponse aggregateResult(final List<MarketData> result, final String ticker) {
         // Simple aggregation: average price from all sources.
-        final BigDecimal averagePrice = result.stream()
-                .map(MarketData::currentPrice)
-                .findAny() //TODO: calculate real average
-                .orElse(BigDecimal.ZERO);
+        final double averagePrice = result.stream()
+                .mapToDouble(MarketData::currentPrice)
+                .average()
+                .orElse(0.0);
 
         // Map the results to show the price from each source.
-        final Map<String, BigDecimal> sourceMap = result.stream()
+        final Map<String, Double> sourceMap = result.stream()
                 .collect(Collectors.toMap(MarketData::sourceName, MarketData::currentPrice));
 
         return new AggregatedQuoteResponse(ticker, averagePrice, sourceMap);

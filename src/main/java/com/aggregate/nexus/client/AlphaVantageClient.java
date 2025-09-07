@@ -23,7 +23,7 @@ public class AlphaVantageClient implements ParserClient {
             final AlphaVantageResponse response = mapper.readValue(responseBody, AlphaVantageResponse.class);
 
             if (response.globalQuote() != null) {
-                return new MarketData(SourceQuote.FINNHUB.getName(), ticker, response.globalQuote().price());
+                return new MarketData(SourceQuote.ALPHA_VANTAGE.getName(), ticker, response.globalQuote().price());
             }
 
             throw new RuntimeException("Invalid Alpha Vantage response format");

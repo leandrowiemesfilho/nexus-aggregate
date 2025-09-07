@@ -23,10 +23,12 @@ extra["springCloudVersion"] = "2025.0.0"
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-web")
+
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.cloud:spring-cloud-starter-circuitbreaker-resilience4j")
+
     implementation("org.springframework.boot:spring-boot-starter-data-redis")
-    implementation("io.lettuce:lettuce-core:6.2.4.RELEASE")
+    implementation("io.lettuce:lettuce-core:6.4.2.RELEASE")
 
     runtimeOnly("org.postgresql:postgresql")
 
