@@ -1,8 +1,8 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/nexus_aggregate
-    username: nexus
-    password: nexus
+    url: jdbc:postgresql://localhost:5432/${POSTGRES_DB:nexus_aggregate}
+    username: ${POSTGRES_USER:nexus}
+    password: ${POSTGRES_PASSWORD:nexus}
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
@@ -22,8 +22,8 @@ spring:
       enabled: true
   data:
     redis:
-      host: localhost
-      port: 6379
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
   cache:
     type: redis
     redis:
