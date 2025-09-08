@@ -52,6 +52,15 @@ export ALPHA_VANTAGE_API_KEY=your_alpha_vantage_key
 export FINNHUB_API_KEY=your_finnhub_key
 ```
 
+You can also configure it in a `.env` file:
+```env
+ALPHA_VANTAGE_API_KEY=your_actual_alpha_vantage_key_here
+FINNHUB_API_KEY=your_actual_finnhub_key_here
+```
+
+#### 🔑 How to get your API keys
+Alpha advantage and Finnhub provides a free trial for their API consumption
+
 ### 2. Start Infrastructure
 
 ```bash
