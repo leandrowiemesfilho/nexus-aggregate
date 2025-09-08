@@ -29,13 +29,28 @@ spring:
     redis:
       time-to-live: 60000
 
+dotenv:
+  loader:
+    enabled: true
+  filename: .env
+
 nexus:
+  api:
+    alpha-vantage:
+      base-url: "https://www.alphavantage.co/query"
+      api-key: ${ALPHA_VANTAGE_API_KEY:demo}
+      complete-url: "${nexus.api.alpha-vantage.base-url}?function=GLOBAL_QUOTE&symbol={ticker}&apikey=${nexus.api.alpha-vantage.api-key}"
+    finnhub:
+      base-url: "https://finnhub.io/api/v1"
+      api-key: ${FINNHUB_API_KEY:demo}
+      complete-url: "${nexus.api.finnhub.base-url}/quote?symbol={ticker}&token=${nexus.api.finnhub.api-key}"
+
   sources:
     - name: "alphaVantage"
-      url: "https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol={ticker}&apikey=${ALPHA_VANTAGE_API_KEY}"
+      url: "${nexus.api.alpha-vantage.complete-url}"
       enabled: true
     - name: "finnhub"
-      url: "https://finnhub.io/api/v1/quote?symbol={ticker}&token=${FINNHUB_API_KEY}"
+      url: "${nexus.api.finnhub.complete-url}"
       enabled: true
 
 resilience4j:
