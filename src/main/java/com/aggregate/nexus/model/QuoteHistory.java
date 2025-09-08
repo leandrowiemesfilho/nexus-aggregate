@@ -27,7 +27,7 @@ public class QuoteHistory implements Serializable {
     @Column(name = "aggregated_price", nullable = false, precision = 19, scale = 4)
     private BigDecimal aggregatedPrice;
 
-    @Column(name = "quote_timestamp")
+    @Column(name = "timestamp")
     private Instant timestamp;
 
     @Column(columnDefinition = "JSONB")
