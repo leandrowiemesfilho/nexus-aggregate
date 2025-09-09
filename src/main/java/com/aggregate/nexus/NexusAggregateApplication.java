@@ -13,9 +13,9 @@ import java.util.concurrent.Executors;
 @SpringBootApplication
 public class NexusAggregateApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(NexusAggregateApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(NexusAggregateApplication.class, args);
+    }
 
     /**
      * Configures the asynchronous task executor for event processing.

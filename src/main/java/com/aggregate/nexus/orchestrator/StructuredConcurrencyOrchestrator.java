@@ -1,6 +1,7 @@
 package com.aggregate.nexus.orchestrator;
 
 import com.aggregate.nexus.config.SourceConfig;
+import com.aggregate.nexus.config.SourceConfigProperties;
 import com.aggregate.nexus.domain.AggregatedQuoteResponse;
 import com.aggregate.nexus.domain.MarketData;
 import com.aggregate.nexus.event.NewQuoteEvent;
@@ -20,17 +21,17 @@ import java.util.stream.Collectors;
 
 @Component
 public class StructuredConcurrencyOrchestrator {
-    private final List<SourceConfig> sources;
+    private final SourceConfigProperties sourceConfigProperties;
     private final QuoteCachingService cachingService;
     private final DataAggregationService dataAggregationService;
     private final ApplicationEventPublisher applicationEventPublisher;
 
     @Autowired
-    public StructuredConcurrencyOrchestrator(final List<SourceConfig> sources,
+    public StructuredConcurrencyOrchestrator(final SourceConfigProperties sourceConfigProperties,
                                              final QuoteCachingService cachingService,
                                              final DataAggregationService dataAggregationService,
                                              final ApplicationEventPublisher applicationEventPublisher) {
-        this.sources = sources;
+        this.sourceConfigProperties = sourceConfigProperties;
         this.cachingService = cachingService;
         this.dataAggregationService = dataAggregationService;
         this.applicationEventPublisher = applicationEventPublisher;
@@ -67,7 +68,7 @@ public class StructuredConcurrencyOrchestrator {
             // Launch all subtasks to fetch data from each enabled source
             final List<Subtask<MarketData>> subtasks = new ArrayList<>();
 
-            for (final SourceConfig source : this.sources) {
+            for (final SourceConfig source : this.sourceConfigProperties.getSources()) {
                 if (source.enabled()) {
                     // Fork a new virtual thread for each source.
                     // The Supplier (() -> ...) is the work to be done
