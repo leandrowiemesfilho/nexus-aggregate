@@ -10,6 +10,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Component responsible for listening to NewQuoteEvents and persisting them
@@ -40,11 +42,19 @@ public class QuotePersistenceEventListener {
     @Transactional
     public void eventHandler(final NewQuoteEvent event) {
         final QuoteHistory quoteHistory = new QuoteHistory();
-        final AggregatedQuoteResponse quoteResponse = event.getQuoteResponse();
+        final AggregatedQuoteResponse quoteResponse = event.response();
 
         quoteHistory.setSymbol(quoteResponse.symbol());
         quoteHistory.setTimestamp(Instant.now());
         quoteHistory.setAggregatedPrice(BigDecimal.valueOf(quoteResponse.lastPrice()));
+        quoteHistory.setSourcePrices(quoteResponse.sources()
+                .entrySet()
+                .stream()
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        entry -> BigDecimal.valueOf(entry.getValue())
+                ))
+        );
 
         this.quoteHistoryRepository.save(quoteHistory);
     }

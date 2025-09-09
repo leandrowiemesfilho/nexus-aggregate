@@ -7,7 +7,6 @@ import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
 
 import java.math.BigDecimal;
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -26,12 +25,8 @@ public class HashMapConverter implements AttributeConverter<Map<String, BigDecim
      */
     @Override
     public String convertToDatabaseColumn(final Map<String, BigDecimal> attribute) {
-        if (attribute == null) {
-            return null;
-        }
-
         try {
-            return this.objectMapper.writeValueAsString(attribute);
+            return attribute != null ? objectMapper.writeValueAsString(attribute) : null;
         } catch (final JsonProcessingException e) {
             throw new IllegalArgumentException("Error converting map to JSON", e);
         }
@@ -45,13 +40,9 @@ public class HashMapConverter implements AttributeConverter<Map<String, BigDecim
      */
     @Override
     public Map<String, BigDecimal> convertToEntityAttribute(final String dbData) {
-        if (dbData == null) {
-            return null;
-        }
-
         try {
-            return this.objectMapper.readValue(dbData, new TypeReference<HashMap<String, BigDecimal>>() {
-            });
+            return dbData != null ? objectMapper.readValue(dbData, new TypeReference<>() {
+            }) : null;
         } catch (final JsonProcessingException e) {
             throw new IllegalArgumentException("Error converting JSON to map", e);
         }

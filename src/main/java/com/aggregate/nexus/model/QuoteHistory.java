@@ -2,6 +2,8 @@ package com.aggregate.nexus.model;
 
 import com.aggregate.nexus.model.converter.HashMapConverter;
 import jakarta.persistence.*;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -17,7 +19,7 @@ import java.util.Map;
 @Table(name = "quotes")
 public class QuoteHistory implements Serializable {
     @Id
-    @GeneratedValue(strategy =  GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
 
@@ -30,6 +32,7 @@ public class QuoteHistory implements Serializable {
     @Column(name = "timestamp")
     private Instant timestamp;
 
+    @JdbcTypeCode(SqlTypes.JSON)
     @Column(columnDefinition = "JSONB")
     @Convert(converter = HashMapConverter.class)
     private Map<String, BigDecimal> sourcePrices;

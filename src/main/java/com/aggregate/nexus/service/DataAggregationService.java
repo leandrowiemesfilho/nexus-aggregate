@@ -3,8 +3,8 @@ package com.aggregate.nexus.service;
 import com.aggregate.nexus.client.AlphaVantageClient;
 import com.aggregate.nexus.client.FinnhubClient;
 import com.aggregate.nexus.client.ParserClient;
-import com.aggregate.nexus.domain.MarketData;
 import com.aggregate.nexus.config.SourceConfig;
+import com.aggregate.nexus.domain.MarketData;
 import com.aggregate.nexus.domain.SourceQuote;
 import io.github.resilience4j.circuitbreaker.CircuitBreaker;
 import io.github.resilience4j.circuitbreaker.CircuitBreakerRegistry;
@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -21,7 +20,6 @@ import java.net.http.HttpResponse;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadLocalRandom;
 
 @Service
 public class DataAggregationService {

@@ -89,11 +89,13 @@ The application will start on port 8080.
 
 ## 📊 API Endpoints
 
-### REST API
+### REST API's
 
 | Endpoint                                     | Method  | Description                       |
 |:---------------------------------------------|:--------|:----------------------------------|
 | `/api/v1/quote/{ticker}`                     | **GET** | Get aggregated quote for a symbol |
+| `/api/v1/quote/{ticker}/history`             | **GET** | Get historical quotes             |
+| `/api/v1/quote/{ticker}/summary?days={days}` | **GET** | Get daily summary statistics      |
 
 ### Streaming API
 
